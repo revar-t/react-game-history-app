@@ -20,7 +20,7 @@ const Header = () => {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: 'flex' }}>
             <Tooltip title="ゲームを新規登録する">
-              <IconButton sx={{ color: 'white' }}>
+              <IconButton sx={{ color: 'white' }} component={Link} to='/create'>
                 <CreateIcon />
               </IconButton>
             </Tooltip>

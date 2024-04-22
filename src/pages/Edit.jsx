@@ -11,10 +11,8 @@ import {
 import uuid from 'react-uuid';
 import { useNavigate } from 'react-router-dom';
 
-const Create = () => {
-  const [games, setGames] = useState(
-    JSON.parse(localStorage.getItem('games')) || []
-  );
+const Edit = () => {
+  const [games, setGames] = useState(JSON.parse(localStorage.getItem('games')) || [])
 
   const [ratingValue, setRatingValue] = useState(2);
 
@@ -54,12 +52,6 @@ const Create = () => {
   console.log(games);
   return (
     <Container maxWidth="sm">
-      <Typography
-        component="h2"
-        sx={{ fontSize: '1.75rem', fontWeight: '700', textAlign: 'center' }}
-      >
-        ゲームの新規登録
-      </Typography>
       <Box component="form" sx={{ padding: '20px' }} onSubmit={handleSubmit}>
         <TextField
           fullWidth
@@ -134,4 +126,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default Edit;
