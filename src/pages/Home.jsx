@@ -1,47 +1,64 @@
 import {
   Card,
-  CardContent,
+  CardActionArea,
   Chip,
   Container,
   Rating,
   Stack,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
-  const [games, setGames] = useState(
+  const MAX_STR_LENGTH = 140;
+  const [games, ] = useState(
     JSON.parse(localStorage.getItem('games')) || []
   );
 
-  console.log(games);
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" sx={{ mt: '40px', mb: '40px' }}>
       <Typography
         component="h2"
-        sx={{ fontSize: '1.75rem', fontWeight: '700', textAlign: 'center' }}
+        sx={{
+          fontSize: '1.75rem',
+          fontWeight: '700',
+          textAlign: 'center',
+          mb: '20px',
+        }}
       >
         ゲームタイトル一覧
       </Typography>
+      
       {games.map((game) => {
-        console.log(game);
         return (
-          <Card valiant="outlined" key={game.id}>
-            <CardContent>
+          <Card
+            valiant="outlined"
+            key={game.id}
+            sx={{ p: '10px', mb: '20px' }}
+          >
+            <CardActionArea 
+              component={Link}
+              to={`/edit/${game.id}`}
+            >
               <Typography component="h3" sx={{ fontSize: '1.5rem' }}>
                 {game.title}
               </Typography>
-              <Stack direction="row">
+              <Stack direction="row" sx={{ mb: '10px' }}>
                 <Typography component="legend">評価</Typography>
                 <Rating value={game.rating} precision={0.5} readOnly />
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Chip label={game.platform} color="default" />
-                <Chip label={game.genre} color="primary" />
-                <Chip label={game.seller} color="info" />
+              <Stack direction="row" spacing={2} sx={{ mb: '10px' }}>
+                {game.platform && <Chip label={game.platform} color="default" />}
+                {game.genre && <Chip label={game.genre} color="primary" />}
+                {game.seller && <Chip label={game.seller} color="info" />}
               </Stack>
-              <p>{game.impression}</p>
-            </CardContent>
+              <Typography component="p">
+                {game.impression.length < MAX_STR_LENGTH
+                  ? game.impression
+                  : game.impression.substring(0, MAX_STR_LENGTH) + ' ...'}
+              </Typography>
+            </CardActionArea>
           </Card>
         );
       })}

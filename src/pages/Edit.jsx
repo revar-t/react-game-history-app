@@ -8,15 +8,24 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import uuid from 'react-uuid';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Edit = () => {
-  const [games, setGames] = useState(JSON.parse(localStorage.getItem('games')) || [])
-
-  const [ratingValue, setRatingValue] = useState(2);
+  const { id } = useParams();
+  const [games, setGames] = useState(
+    JSON.parse(localStorage.getItem('games')) || []
+  );
 
   const navigate = useNavigate();
+
+  const getGame = games.find((game) => game.id === id);
+
+  const [activeTitle, setActiveTitle] = useState(getGame.title);
+  const [activePratform, setActivePratform] = useState(getGame.platform);
+  const [activeGenre, setActiveGenre] = useState(getGame.genre);
+  const [activeSeller, setActiveSeller] = useState(getGame.seller);
+  const [activeRating, setActiveRating] = useState(getGame.rating);
+  const [activeImpression, setActiveImpression] = useState(getGame.impression);
 
   // JSON形式に変換してローカルストレージに保存
   useEffect(() => {
@@ -34,22 +43,30 @@ const Edit = () => {
     const genre = game.get('genre');
     const seller = game.get('seller');
     const impression = game.get('impression');
-    console.log(title, platform, genre, seller, ratingValue, impression);
 
     const newGame = {
-      id: uuid(),
+      id,
       title,
       platform,
       genre,
       seller,
-      rating: ratingValue,
+      rating: activeRating,
       impression,
     };
-    console.log(newGame);
-    await setGames([...games, newGame]);
+    // 更新するのを取り除く
+    const newGames = games.filter((game) => game.id !== id);
+
+    await setGames([...newGames, newGame]);
     navigate('/');
   };
-  console.log(games);
+
+  const handleDelete = (id) => {
+    const filterGames = games.filter((game) => game.id !== id);
+    localStorage.setItem('games', JSON.stringify(filterGames));
+    console.log(filterGames);
+    navigate('/');
+  };
+
   return (
     <Container maxWidth="sm">
       <Box component="form" sx={{ padding: '20px' }} onSubmit={handleSubmit}>
@@ -59,6 +76,8 @@ const Edit = () => {
           name="title"
           label="ゲームのタイトル"
           placeholder="例：スーパーマリオブラザーズ ワンダー"
+          defaultValue={activeTitle}
+          onChange={(e, newTitle) => setActiveTitle(newTitle)}
           margin="normal"
           required
         />
@@ -68,6 +87,8 @@ const Edit = () => {
           name="platform"
           label="機種"
           placeholder="例：Switch"
+          defaultValue={activePratform}
+          onChange={(e, newPratform) => setActivePratform(newPratform)}
           margin="normal"
         />
         <TextField
@@ -76,6 +97,8 @@ const Edit = () => {
           name="genre"
           label="ジャンル"
           placeholder="例：アクション"
+          defaultValue={activeGenre}
+          onChange={(e, newGenre) => setActiveGenre(newGenre)}
           margin="normal"
         />
         <TextField
@@ -84,6 +107,8 @@ const Edit = () => {
           name="seller"
           label="販売元"
           placeholder="例：任天堂"
+          defaultValue={activeSeller}
+          onChange={(e, newSeller) => setActiveSeller(newSeller)}
           margin="normal"
         />
         <Typography component="legend" sx={{ marginTop: '10px' }}>
@@ -91,12 +116,9 @@ const Edit = () => {
         </Typography>
         <Rating
           name="simple-controlled"
-          value={ratingValue}
+          defaultValue={activeRating}
           precision={0.5}
-          onChange={(event, newRatingValue) => {
-            setRatingValue(newRatingValue);
-            console.log(newRatingValue);
-          }}
+          onChange={(e, newRating) => setActiveRating(newRating)}
         />
         <TextField
           multiline
@@ -105,6 +127,8 @@ const Edit = () => {
           id="impression"
           name="impression"
           label="感想"
+          defaultValue={activeImpression}
+          onChange={(e, newImpression) => setActiveImpression(newImpression)}
           placeholder="例：配管工がワンダー"
           margin="normal"
         />
@@ -114,11 +138,15 @@ const Edit = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            gap: '30px',
             marginTop: '10px',
           }}
         >
           <Button variant="outlined" type="submit">
-            新規登録
+            変更
+          </Button>
+          <Button variant="contained" color="warning" onClick={() =>handleDelete(id)}>
+            削除
           </Button>
         </Stack>
       </Box>
