@@ -53,7 +53,7 @@ const Create = () => {
   };
   console.log(games);
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" sx={{ mt: '40px', mb: '40px' }}>
       <Typography
         component="h2"
         sx={{ fontSize: '1.75rem', fontWeight: '700', textAlign: 'center' }}

@@ -25,8 +25,10 @@ function App() {
           <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
+              <Route path='index.html' element={<Home />} />
               <Route path="create" element={<Create />} />
               <Route path="edit/:id" element={<Edit />} />
+              <Route path="*" element={<h1>Page Not Found</h1>} />
             </Route>
           </Routes>
         </Router>
